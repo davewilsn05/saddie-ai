@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// Different topic pool from trlactive.com — saddie.ai targets Saddie-persona and lifestyle angles
 const TOPIC_POOL = [
   { slug: "workout-app-for-shift-workers", tag: "Lifestyle", cluster: "lifestyle", keyword: "best workout app for shift workers" },
   { slug: "ai-coach-vs-gym-bro-advice", tag: "AI Coaching", cluster: "ai-coaching", keyword: "AI fitness coach vs gym bro advice" },
@@ -37,6 +36,17 @@ export async function GET(req: Request) {
 
   const topic = getTodaysTopic();
   const date = new Date().toISOString().split("T")[0];
+  const title = topic.keyword.charAt(0).toUpperCase() + topic.keyword.slice(1);
+
+  // Check if file already exists
+  const filePath = `content/blog/${topic.slug}.mdx`;
+  const checkRes = await fetch(`https://api.github.com/repos/davewilsn05/saddie-ai/contents/${filePath}`, {
+    headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` },
+  });
+
+  if (checkRes.ok) {
+    return NextResponse.json({ skipped: true, slug: topic.slug, reason: "already exists" });
+  }
 
   // Generate post via OpenAI
   const prompt = `Write a practical, consumer-friendly fitness blog post for saddie.ai — the home of Saddie, an AI fitness coach.
@@ -49,7 +59,7 @@ Requirements:
 - 500-750 words
 - Practical, actionable advice
 - Mention that Saddie powers TRLActive (trlactive.com) naturally once or twice
-- Use ## headings
+- Use ## headings for sections
 - End with a short CTA encouraging the reader to try TRLActive
 - No fluff, no filler
 
@@ -76,56 +86,21 @@ Return ONLY the markdown body. Start with the first paragraph, not a heading.`;
 
   const data = await res.json();
   const body = data.choices[0].message.content.trim();
-  const title = topic.keyword.charAt(0).toUpperCase() + topic.keyword.slice(1);
+  const description = `${topic.keyword} — practical advice from Saddie, your AI fitness coach.`;
 
-  // Build new post object to append to posts array via GitHub
-  const newPost = {
-    slug: topic.slug,
-    title,
-    summary: `${topic.keyword} — practical advice from Saddie, your AI fitness coach.`,
-    date: new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
-    readTime: "4 min",
-    tag: topic.tag,
-    cluster: topic.cluster,
-    body,
-  };
+  // Build MDX file content
+  const mdxContent = `---
+title: "${title.replace(/"/g, '\\"')}"
+description: "${description.replace(/"/g, '\\"')}"
+date: "${date}"
+tag: "${topic.tag}"
+cluster: "${topic.cluster}"
+---
 
-  // Fetch current posts.ts from GitHub
-  const getRes = await fetch("https://api.github.com/repos/davewilsn05/saddie-ai/contents/lib/posts.ts", {
-    headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` },
-  });
+${body}`;
 
-  if (!getRes.ok) {
-    return NextResponse.json({ error: "Could not fetch posts.ts" }, { status: 500 });
-  }
-
-  const fileData = await getRes.json();
-  const currentContent = Buffer.from(fileData.content, "base64").toString("utf-8");
-
-  // Skip if slug already exists
-  if (currentContent.includes(`slug: "${topic.slug}"`)) {
-    return NextResponse.json({ skipped: true, slug: topic.slug, reason: "already exists" });
-  }
-
-  // Insert new post before the closing ]; of the POSTS array
-  const newPostEntry = `  {
-    slug: "${newPost.slug}",
-    title: "${newPost.title.replace(/"/g, '\\"')}",
-    summary: "${newPost.summary.replace(/"/g, '\\"')}",
-    date: "${newPost.date}",
-    readTime: "${newPost.readTime}",
-    tag: "${newPost.tag}",
-    cluster: "${newPost.cluster}",
-    body: \`${newPost.body.replace(/`/g, "'")}\`,
-  },`;
-
-  const updatedContent = currentContent.replace(
-    /^(export function getPost)/m,
-    `${newPostEntry}\n\nexport function getPost`
-  );
-
-  // Commit updated posts.ts
-  const putRes = await fetch("https://api.github.com/repos/davewilsn05/saddie-ai/contents/lib/posts.ts", {
+  // Commit new MDX file to GitHub
+  const putRes = await fetch(`https://api.github.com/repos/davewilsn05/saddie-ai/contents/${filePath}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
@@ -133,8 +108,7 @@ Return ONLY the markdown body. Start with the first paragraph, not a heading.`;
     },
     body: JSON.stringify({
       message: `Auto-post: ${title}`,
-      content: Buffer.from(updatedContent).toString("base64"),
-      sha: fileData.sha,
+      content: Buffer.from(mdxContent).toString("base64"),
     }),
   });
 
