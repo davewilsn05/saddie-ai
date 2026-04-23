@@ -1,17 +1,21 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const links = [
   { href: "/blog", label: "Blog" },
   { href: "/vs", label: "Compare" },
   { href: "/topics", label: "Topics" },
+  { href: "/workout-type/strength-training", label: "Workouts" },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
   return (
-    <header style={{ borderBottom: "1px solid var(--border)", background: "rgba(6,6,10,0.9)" }}
+    <header style={{ borderBottom: "1px solid var(--border)", background: "rgba(6,6,10,0.92)" }}
       className="sticky top-0 z-50 backdrop-blur-md">
       <nav className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
@@ -23,7 +27,7 @@ export default function Nav() {
           {links.map((l) => (
             <Link key={l.href} href={l.href}
               className="transition-opacity hover:opacity-80"
-              style={{ color: pathname.startsWith(l.href) ? "var(--foreground)" : "var(--muted)" }}>
+              style={{ color: pathname.startsWith(l.href.split("/").slice(0, 2).join("/")) ? "var(--foreground)" : "var(--muted)" }}>
               {l.label}
             </Link>
           ))}

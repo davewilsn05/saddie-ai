@@ -19,9 +19,21 @@ export default async function GoalPage({ params }: { params: Promise<{ goal: str
   const g = getGoal(goal);
   if (!g) notFound();
 
+  const faqSchema = g.faqs?.length ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: g.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  } : null;
+
   const otherGoals = GOALS.filter((x) => x.slug !== g.slug);
 
   return (
+    <>
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
     <main>
       {/* Hero */}
       <section className="relative overflow-hidden">
@@ -81,6 +93,21 @@ export default async function GoalPage({ params }: { params: Promise<{ goal: str
         </a>
       </section>
 
+      {/* FAQ */}
+      {g.faqs?.length > 0 && (
+        <section className="max-w-3xl mx-auto px-6 pb-16">
+          <h2 className="text-2xl font-bold mb-6" style={{ color: "var(--foreground)" }}>Common questions</h2>
+          <div className="flex flex-col gap-4">
+            {g.faqs.map((f) => (
+              <div key={f.q} className="rounded-xl p-5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                <h3 className="font-semibold text-sm mb-2" style={{ color: "var(--foreground)" }}>{f.q}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Other goals */}
       <section style={{ borderTop: "1px solid var(--border)" }}>
         <div className="max-w-3xl mx-auto px-6 py-12">
@@ -90,12 +117,13 @@ export default async function GoalPage({ params }: { params: Promise<{ goal: str
               <Link key={og.slug} href={`/for/${og.slug}`}
                 className="px-4 py-2 rounded-full text-sm hover:opacity-80 transition-opacity"
                 style={{ background: "var(--card)", border: "1px solid var(--border)", color: "var(--muted)" }}>
-                {og.headline.replace("AI coaching built for ", "").replace("Stay fit ", "").replace("Build muscle faster with AI coaching", "Building muscle").replace("Start your fitness journey the right way", "Beginners").replace("AI coaching for runners who also lift", "Runners")}
+                {og.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
               </Link>
             ))}
           </div>
         </div>
       </section>
     </main>
+    </>
   );
 }

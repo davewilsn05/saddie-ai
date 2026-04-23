@@ -11,7 +11,11 @@ export async function generateMetadata({ params }: { params: Promise<{ competito
   const { competitor } = await params;
   const c = getCompetitor(competitor);
   if (!c) return {};
-  return { title: `${c.tagline} | Saddie`, description: c.verdict };
+  return {
+    title: `${c.tagline} | Saddie`,
+    description: c.verdict,
+    openGraph: { images: [{ url: `/api/og?title=Saddie+vs+${encodeURIComponent(c.name)}&tag=Comparison`, width: 1200, height: 630 }] },
+  };
 }
 
 export default async function ComparisonPage({ params }: { params: Promise<{ competitor: string }> }) {
@@ -19,7 +23,19 @@ export default async function ComparisonPage({ params }: { params: Promise<{ com
   const c = getCompetitor(competitor);
   if (!c) notFound();
 
+  const faqSchema = c.faqs?.length ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: c.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  } : null;
+
   return (
+    <>
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
     <main className="max-w-3xl mx-auto px-6 py-16">
       <div className="mb-8">
         <Link href="/vs" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "var(--muted)" }}>← Compare</Link>
@@ -93,6 +109,21 @@ export default async function ComparisonPage({ params }: { params: Promise<{ com
         </a>
       </div>
 
+      {/* FAQ */}
+      {c.faqs?.length > 0 && (
+        <div className="mt-12">
+          <h2 className="font-bold text-lg mb-5" style={{ color: "var(--foreground)" }}>Frequently asked questions</h2>
+          <div className="flex flex-col gap-4">
+            {c.faqs.map((f) => (
+              <div key={f.q} className="rounded-xl p-5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                <h3 className="font-semibold text-sm mb-2" style={{ color: "var(--foreground)" }}>{f.q}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Other comparisons */}
       <div className="mt-14">
         <h3 className="text-base font-bold mb-4" style={{ color: "var(--foreground)" }}>More comparisons</h3>
@@ -107,5 +138,6 @@ export default async function ComparisonPage({ params }: { params: Promise<{ com
         </div>
       </div>
     </main>
+    </>
   );
 }
