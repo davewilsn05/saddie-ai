@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ competito
   return {
     title: `${c.tagline} | Saddie`,
     description: c.verdict,
+    alternates: { canonical: `https://saddie.ai/vs/${competitor}` },
     openGraph: { images: [{ url: `/api/og?title=Saddie+vs+${encodeURIComponent(c.name)}&tag=Comparison`, width: 1200, height: 630 }] },
   };
 }

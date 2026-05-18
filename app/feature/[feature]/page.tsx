@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ feature: 
   const { feature } = await params;
   const f = getFeature(feature);
   if (!f) return {};
-  return { title: f.metaTitle, description: f.metaDescription };
+  return { title: f.metaTitle, description: f.metaDescription, alternates: { canonical: `https://saddie.ai/feature/${feature}` } };
 }
 
 export default async function FeaturePage({ params }: { params: Promise<{ feature: string }> }) {

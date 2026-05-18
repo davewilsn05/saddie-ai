@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ type: str
   const { type } = await params;
   const w = getWorkoutType(type);
   if (!w) return {};
-  return { title: w.metaTitle, description: w.metaDescription };
+  return { title: w.metaTitle, description: w.metaDescription, alternates: { canonical: `https://saddie.ai/workout-type/${type}` } };
 }
 
 export default async function WorkoutTypePage({ params }: { params: Promise<{ type: string }> }) {

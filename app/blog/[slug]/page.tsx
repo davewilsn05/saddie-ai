@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${post.title} | Saddie`,
     description: post.description,
+    alternates: { canonical: `https://saddie.ai/blog/${slug}` },
     openGraph: {
       images: [{ url: `/api/og?title=${encodeURIComponent(post.title)}&tag=${encodeURIComponent(post.tag)}`, width: 1200, height: 630 }],
     },

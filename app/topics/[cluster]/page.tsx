@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ cluster: 
   const { cluster } = await params;
   const topic = getTopic(cluster);
   if (!topic) return {};
-  return { title: topic.metaTitle, description: topic.metaDescription };
+  return { title: topic.metaTitle, description: topic.metaDescription, alternates: { canonical: `https://saddie.ai/topics/${cluster}` } };
 }
 
 export default async function TopicPage({ params }: { params: Promise<{ cluster: string }> }) {
