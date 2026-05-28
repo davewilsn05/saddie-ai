@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { USER_SURVEY_QUESTIONS } from "../../lib/survey";
+import { buildSiteMetadata } from "../../lib/siteMetadata";
 
 type SurveyAnswer = {
   id: string;
@@ -20,10 +21,14 @@ type SurveyRow = {
 
 type Counts = Record<string, Record<string, number>>;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSiteMetadata({
   title: "TRL/Active Survey Results",
   description: "Admin view for TRL/Active user survey responses.",
-};
+  path: "/admin",
+  imageTitle: "TRL/Active survey results",
+  imageTag: "Admin",
+  robots: { index: false, follow: false },
+});
 
 function isAuthorized(token?: string) {
   const expected = process.env.ADMIN_SURVEY_TOKEN;

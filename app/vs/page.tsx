@@ -1,11 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { COMPETITORS } from "../../lib/competitors";
+import { buildSiteMetadata } from "../../lib/siteMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSiteMetadata({
   title: "Saddie vs Other Fitness Apps | Honest Comparisons",
   description: "Honest side-by-side comparisons of TRLActive and Saddie vs Fitbod, Future, Freeletics, MyFitnessPal, and Peloton.",
-};
+  path: "/vs",
+  imageTitle: "How Saddie compares",
+  imageTag: "Comparisons",
+});
 
 export default function VsIndex() {
   return (

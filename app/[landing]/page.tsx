@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SEO_LANDING_PAGES, getSeoLandingPage } from "../../lib/seoLandingPages";
+import { SITE_URL, buildSiteMetadata } from "../../lib/siteMetadata";
 
-const BASE = "https://saddie.ai";
+const BASE = SITE_URL;
 
 export async function generateStaticParams() {
   return SEO_LANDING_PAGES.map((page) => ({ landing: page.slug }));
@@ -14,16 +15,13 @@ export async function generateMetadata({ params }: { params: Promise<{ landing: 
   const page = getSeoLandingPage(landing);
   if (!page) return {};
 
-  return {
+  return buildSiteMetadata({
     title: page.metaTitle,
     description: page.metaDescription,
-    alternates: { canonical: `${BASE}/${page.slug}` },
-    openGraph: {
-      title: page.metaTitle,
-      description: page.metaDescription,
-      images: [{ url: `/api/og?title=${encodeURIComponent(page.headline)}&tag=${encodeURIComponent(page.eyebrow)}`, width: 1200, height: 630 }],
-    },
-  };
+    path: `/${page.slug}`,
+    imageTitle: page.headline,
+    imageTag: page.eyebrow,
+  });
 }
 
 export default async function SeoLandingPage({ params }: { params: Promise<{ landing: string }> }) {

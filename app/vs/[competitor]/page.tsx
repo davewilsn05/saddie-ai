@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { COMPETITORS, getCompetitor } from "../../../lib/competitors";
+import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
 export async function generateStaticParams() {
   return COMPETITORS.map((c) => ({ competitor: c.slug }));
@@ -11,12 +12,13 @@ export async function generateMetadata({ params }: { params: Promise<{ competito
   const { competitor } = await params;
   const c = getCompetitor(competitor);
   if (!c) return {};
-  return {
+  return buildSiteMetadata({
     title: `${c.tagline} | Saddie`,
     description: c.verdict,
-    alternates: { canonical: `https://saddie.ai/vs/${competitor}` },
-    openGraph: { images: [{ url: `/api/og?title=Saddie+vs+${encodeURIComponent(c.name)}&tag=Comparison`, width: 1200, height: 630 }] },
-  };
+    path: `/vs/${competitor}`,
+    imageTitle: `Saddie vs ${c.name}`,
+    imageTag: "Comparison",
+  });
 }
 
 export default async function ComparisonPage({ params }: { params: Promise<{ competitor: string }> }) {

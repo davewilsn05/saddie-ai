@@ -2,11 +2,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { TOPICS } from "../../lib/topics";
 import { POSTS } from "../../lib/posts";
+import { buildSiteMetadata } from "../../lib/siteMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSiteMetadata({
   title: "Topics — Saddie",
   description: "Browse fitness topics by cluster: adaptive training, voice coaching, comparisons, lifestyle, and AI personal training.",
-};
+  path: "/topics",
+  imageTitle: "Fitness topics by Saddie",
+  imageTag: "Topics",
+});
 
 export default function TopicsIndex() {
   return (

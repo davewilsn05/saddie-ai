@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import SurveyForm from "./SurveyForm";
+import { buildSiteMetadata } from "../../lib/siteMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSiteMetadata({
   title: "TRL/Active User Survey",
   description: "Share quick feedback about TRL/Active ease of use, satisfaction, pricing, and what we should improve next.",
-  alternates: { canonical: "https://trlactive.com/survey" },
-};
+  path: "/survey",
+  imageTitle: "Help us make TRL/Active easier to use",
+  imageTag: "User survey",
+});
 
 export default async function SurveyPage({
   searchParams,

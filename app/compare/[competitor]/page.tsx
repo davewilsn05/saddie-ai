@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCompetitor } from "../../../lib/competitors";
+import { SITE_URL, buildSiteMetadata } from "../../../lib/siteMetadata";
 
-const BASE = "https://saddie.ai";
+const BASE = SITE_URL;
 
 const comparisonAliases: Record<string, string> = {
   "fitbod-alternative": "fitbod",
@@ -24,14 +25,16 @@ export async function generateMetadata({ params }: { params: Promise<{ competito
   const c = mappedSlug ? getCompetitor(mappedSlug) : undefined;
   if (!c) return {};
 
-  return {
-    title: `${c.name} Alternative: TRL/Active vs ${c.name} | Saddie`,
-    description: `Compare TRL/Active with ${c.name}: pricing, strengths, limits, and when Saddie's adaptive AI fitness coaching is the better fit.`,
-    alternates: { canonical: `${BASE}/compare/${competitor}` },
-    openGraph: {
-      images: [{ url: `/api/og?title=${encodeURIComponent(`${c.name} alternative`)}&tag=Comparison`, width: 1200, height: 630 }],
-    },
-  };
+  const title = `${c.name} Alternative: TRL/Active vs ${c.name} | Saddie`;
+  const description = `Compare TRL/Active with ${c.name}: pricing, strengths, limits, and when Saddie's adaptive AI fitness coaching is the better fit.`;
+
+  return buildSiteMetadata({
+    title,
+    description,
+    path: `/compare/${competitor}`,
+    imageTitle: `${c.name} alternative`,
+    imageTag: "Comparison",
+  });
 }
 
 export default async function CompareAlternativePage({ params }: { params: Promise<{ competitor: string }> }) {

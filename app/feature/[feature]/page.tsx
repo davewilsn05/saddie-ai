@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { FEATURES, getFeature } from "../../../lib/features";
+import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
 export async function generateStaticParams() {
   return FEATURES.map((f) => ({ feature: f.slug }));
@@ -11,7 +12,13 @@ export async function generateMetadata({ params }: { params: Promise<{ feature: 
   const { feature } = await params;
   const f = getFeature(feature);
   if (!f) return {};
-  return { title: f.metaTitle, description: f.metaDescription, alternates: { canonical: `https://saddie.ai/feature/${feature}` } };
+  return buildSiteMetadata({
+    title: f.metaTitle,
+    description: f.metaDescription,
+    path: `/feature/${feature}`,
+    imageTitle: f.headline,
+    imageTag: "Feature",
+  });
 }
 
 export default async function FeaturePage({ params }: { params: Promise<{ feature: string }> }) {

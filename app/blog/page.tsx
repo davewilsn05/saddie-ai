@@ -2,12 +2,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllPosts } from "../../lib/blog";
 import { TOPICS } from "../../lib/topics";
+import { buildSiteMetadata } from "../../lib/siteMetadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSiteMetadata({
   title: "Fitness Blog — Saddie",
   description: "Honest fitness advice, app comparisons, and practical tips for people with real lives. Powered by Saddie AI.",
-  alternates: { canonical: "https://saddie.ai/blog" },
-};
+  path: "/blog",
+  imageTitle: "Fitness tips from Saddie",
+  imageTag: "Blog",
+});
 
 const tagColors: Record<string, string> = {
   Lifestyle: "#22c55e",

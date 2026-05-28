@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllPosts, getPost } from "../../../lib/blog";
 import { TOPICS } from "../../../lib/topics";
+import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
 const clusterProductLinks: Record<string, { href: string; label: string; body: string }> = {
   "ai-coaching": {
@@ -50,14 +51,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return {};
-  return {
+  return buildSiteMetadata({
     title: `${post.title} | Saddie`,
     description: post.description,
-    alternates: { canonical: `https://saddie.ai/blog/${slug}` },
-    openGraph: {
-      images: [{ url: `/api/og?title=${encodeURIComponent(post.title)}&tag=${encodeURIComponent(post.tag)}`, width: 1200, height: 630 }],
-    },
-  };
+    path: `/blog/${slug}`,
+    imageTitle: post.title,
+    imageTag: post.tag,
+    type: "article",
+  });
 }
 
 function renderMarkdown(content: string) {

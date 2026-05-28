@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { TOPICS, getTopic } from "../../../lib/topics";
 import { POSTS } from "../../../lib/posts";
+import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
 export async function generateStaticParams() {
   return TOPICS.map((t) => ({ cluster: t.slug }));
@@ -12,7 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ cluster: 
   const { cluster } = await params;
   const topic = getTopic(cluster);
   if (!topic) return {};
-  return { title: topic.metaTitle, description: topic.metaDescription, alternates: { canonical: `https://saddie.ai/topics/${cluster}` } };
+  return buildSiteMetadata({
+    title: topic.metaTitle,
+    description: topic.metaDescription,
+    path: `/topics/${cluster}`,
+    imageTitle: topic.title,
+    imageTag: "Topic cluster",
+  });
 }
 
 export default async function TopicPage({ params }: { params: Promise<{ cluster: string }> }) {

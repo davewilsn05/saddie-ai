@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { GOALS, getGoal } from "../../../lib/goals";
+import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
 export async function generateStaticParams() {
   return GOALS.map((g) => ({ goal: g.slug }));
@@ -11,7 +12,13 @@ export async function generateMetadata({ params }: { params: Promise<{ goal: str
   const { goal } = await params;
   const g = getGoal(goal);
   if (!g) return {};
-  return { title: g.metaTitle, description: g.metaDescription, alternates: { canonical: `https://saddie.ai/for/${goal}` } };
+  return buildSiteMetadata({
+    title: g.metaTitle,
+    description: g.metaDescription,
+    path: `/for/${goal}`,
+    imageTitle: g.headline,
+    imageTag: "Saddie for",
+  });
 }
 
 export default async function GoalPage({ params }: { params: Promise<{ goal: string }> }) {

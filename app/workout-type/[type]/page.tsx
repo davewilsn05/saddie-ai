@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { WORKOUT_TYPES, getWorkoutType } from "../../../lib/workoutTypes";
+import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
 export async function generateStaticParams() {
   return WORKOUT_TYPES.map((w) => ({ type: w.slug }));
@@ -11,7 +12,13 @@ export async function generateMetadata({ params }: { params: Promise<{ type: str
   const { type } = await params;
   const w = getWorkoutType(type);
   if (!w) return {};
-  return { title: w.metaTitle, description: w.metaDescription, alternates: { canonical: `https://saddie.ai/workout-type/${type}` } };
+  return buildSiteMetadata({
+    title: w.metaTitle,
+    description: w.metaDescription,
+    path: `/workout-type/${type}`,
+    imageTitle: w.headline,
+    imageTag: w.name,
+  });
 }
 
 export default async function WorkoutTypePage({ params }: { params: Promise<{ type: string }> }) {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildSiteMetadata } from "../../lib/siteMetadata";
 
 const comparisons = [
   { href: "/compare/fitbod-alternative", label: "Fitbod alternative", body: "For users who want adaptive coaching beyond gym logging." },
@@ -10,11 +11,13 @@ const comparisons = [
   { href: "/compare/future-alternative", label: "Future alternative", body: "For users who want coach-like planning without a high monthly coach price." },
 ];
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildSiteMetadata({
   title: "Fitness App Alternatives and Comparisons | Saddie",
   description: "Compare TRL/Active with Fitbod, MyFitnessPal, Nike Training Club, Freeletics, Apple Fitness+, Future, and other fitness apps.",
-  alternates: { canonical: "https://saddie.ai/compare" },
-};
+  path: "/compare",
+  imageTitle: "Compare TRL/Active with other fitness apps",
+  imageTag: "App comparisons",
+});
 
 export default function CompareHub() {
   const schema = {
