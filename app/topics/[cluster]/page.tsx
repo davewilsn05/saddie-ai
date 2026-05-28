@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { TOPICS, getTopic } from "../../../lib/topics";
-import { POSTS, getPost } from "../../../lib/posts";
+import { POSTS } from "../../../lib/posts";
 
 export async function generateStaticParams() {
   return TOPICS.map((t) => ({ cluster: t.slug }));
@@ -56,7 +56,7 @@ export default async function TopicPage({ params }: { params: Promise<{ cluster:
       <div className="mt-16 rounded-xl p-8 text-center"
         style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
         <p className="font-semibold text-lg mb-2" style={{ color: "var(--foreground)" }}>Want coaching, not just content?</p>
-        <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>TRLActive puts Saddie's coaching into your workouts — free to start.</p>
+        <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>TRLActive puts Saddie&apos;s coaching into your workouts — free to start.</p>
         <a href="https://trlactive.com" target="_blank" rel="noopener noreferrer"
           className="inline-block px-6 py-2.5 rounded-full text-sm font-semibold hover:opacity-80 transition-opacity"
           style={{ background: "var(--accent)", color: "white" }}>

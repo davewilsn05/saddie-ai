@@ -3,8 +3,8 @@
 :root {
   --background: #06060a;
   --foreground: #f0f0f5;
-  --accent: #7c6cfa;
-  --accent-glow: rgba(124, 108, 250, 0.15);
+  --accent: #e8c735;
+  --accent-glow: rgba(232, 199, 53, 0.15);
   --muted: #9090a0;
   --border: rgba(255,255,255,0.08);
   --card: rgba(255,255,255,0.04);
@@ -26,5 +26,5 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: white;
+  color: #050505;
 }

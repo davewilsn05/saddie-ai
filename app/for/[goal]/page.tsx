@@ -79,7 +79,7 @@ export default async function GoalPage({ params }: { params: Promise<{ goal: str
       <section className="max-w-3xl mx-auto px-6 pb-16">
         <blockquote className="rounded-2xl p-8 text-center"
           style={{ background: "var(--accent-glow)", border: "1px solid rgba(124,108,250,0.2)" }}>
-          <p className="text-lg italic mb-4" style={{ color: "var(--foreground)" }}>"{g.quote}"</p>
+          <p className="text-lg italic mb-4" style={{ color: "var(--foreground)" }}>&ldquo;{g.quote}&rdquo;</p>
           <span className="text-sm" style={{ color: "var(--muted)" }}>— TRLActive user</span>
         </blockquote>
       </section>

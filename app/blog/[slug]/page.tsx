@@ -4,6 +4,44 @@ import type { Metadata } from "next";
 import { getAllPosts, getPost } from "../../../lib/blog";
 import { TOPICS } from "../../../lib/topics";
 
+const clusterProductLinks: Record<string, { href: string; label: string; body: string }> = {
+  "ai-coaching": {
+    href: "/ai-fitness-coach",
+    label: "AI fitness coach",
+    body: "TRL/Active uses Saddie to turn goals, schedule, equipment, feedback, and progress into an adaptive coaching plan.",
+  },
+  "adaptive-training": {
+    href: "/personalized-workout-plan-app",
+    label: "Personalized workout plan app",
+    body: "Saddie helps TRL/Active adjust the workout plan when sessions are missed, performance changes, or the week gets messy.",
+  },
+  "voice-coaching": {
+    href: "/voice-guided-workout-app",
+    label: "Voice-guided workout app",
+    body: "Voice guidance helps users stay in the workout instead of managing every step from the screen.",
+  },
+  comparisons: {
+    href: "/compare",
+    label: "Compare fitness apps",
+    body: "Use the comparison hub to see where TRL/Active fits against workout loggers, calorie counters, class libraries, and coach-led apps.",
+  },
+  Nutrition: {
+    href: "/workout-app-with-meal-planning",
+    label: "Workout app with meal planning",
+    body: "TRL/Active connects workout planning and nutrition support so the plan and food context work together.",
+  },
+  nutrition: {
+    href: "/workout-app-with-meal-planning",
+    label: "Workout app with meal planning",
+    body: "TRL/Active connects workout planning and nutrition support so the plan and food context work together.",
+  },
+  lifestyle: {
+    href: "/for-busy-professionals",
+    label: "Fitness app for busy professionals",
+    body: "TRL/Active is built around real schedules, short windows, missed sessions, travel, and equipment changes.",
+  },
+};
+
 export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
 }
@@ -60,6 +98,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   const allPosts = getAllPosts();
   const relatedPosts = allPosts.filter((p) => p.cluster === post.cluster && p.slug !== post.slug).slice(0, 3);
   const topic = TOPICS.find((t) => t.slug === post.cluster);
+  const productLink = clusterProductLinks[post.cluster] ?? clusterProductLinks["adaptive-training"];
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -101,6 +140,14 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
         <div className="post-body">
           {renderMarkdown(post.content)}
+        </div>
+
+        <div className="mt-10 rounded-xl p-6" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+          <h2 className="font-bold text-lg mb-2" style={{ color: "var(--foreground)" }}>How TRL/Active helps</h2>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--muted)" }}>{productLink.body}</p>
+          <Link href={productLink.href} className="text-sm hover:opacity-80 transition-opacity" style={{ color: "var(--accent)" }}>
+            See {productLink.label} →
+          </Link>
         </div>
 
         {topic && (

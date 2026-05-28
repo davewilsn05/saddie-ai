@@ -1,10 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllPosts } from "../../lib/blog";
+import { TOPICS } from "../../lib/topics";
 
 export const metadata: Metadata = {
   title: "Fitness Blog — Saddie",
   description: "Honest fitness advice, app comparisons, and practical tips for people with real lives. Powered by Saddie AI.",
+  alternates: { canonical: "https://saddie.ai/blog" },
 };
 
 const tagColors: Record<string, string> = {
@@ -22,6 +24,14 @@ const tagColors: Record<string, string> = {
 
 export default function BlogIndex() {
   const posts = getAllPosts();
+  const productLinks = [
+    { href: "/ai-fitness-coach", label: "AI fitness coach" },
+    { href: "/personalized-workout-plan-app", label: "Personalized plans" },
+    { href: "/weight-loss-workout-app", label: "Weight loss" },
+    { href: "/workout-app-with-meal-planning", label: "Workout + meals" },
+    { href: "/compare", label: "App comparisons" },
+  ];
+
   return (
     <main className="max-w-5xl mx-auto px-6 py-16">
       <div className="mb-12">
@@ -30,6 +40,38 @@ export default function BlogIndex() {
           Practical advice for people with real lives. No bro science. No perfect-schedule assumptions.
         </p>
       </div>
+      <section className="grid lg:grid-cols-[1fr_1fr] gap-5 mb-10">
+        <div className="rounded-xl p-5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+          <h2 className="text-sm font-semibold mb-3" style={{ color: "var(--foreground)" }}>Topic clusters</h2>
+          <div className="flex flex-wrap gap-2">
+            {TOPICS.map((topic) => (
+              <Link
+                key={topic.slug}
+                href={`/topics/${topic.slug}`}
+                className="px-3 py-1 rounded-full text-xs hover:opacity-80 transition-opacity"
+                style={{ background: "var(--accent-glow)", color: "var(--accent)" }}
+              >
+                {topic.title}
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl p-5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+          <h2 className="text-sm font-semibold mb-3" style={{ color: "var(--foreground)" }}>Product pages</h2>
+          <div className="flex flex-wrap gap-2">
+            {productLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-3 py-1 rounded-full text-xs hover:opacity-80 transition-opacity"
+                style={{ border: "1px solid var(--border)", color: "var(--muted)" }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {posts.map((post) => {
           const color = tagColors[post.tag] ?? "var(--accent)";
