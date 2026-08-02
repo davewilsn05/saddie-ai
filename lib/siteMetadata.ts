@@ -42,7 +42,7 @@ export function buildSiteMetadata({
     title: { absolute: title },
     description,
     alternates: { canonical },
-    robots,
+    robots: robots ?? { index: false, follow: true },
     openGraph: {
       title,
       description,

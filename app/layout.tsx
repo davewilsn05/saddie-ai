@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: { default: DEFAULT_TITLE, template: `%s | ${SITE_NAME}` },
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
+  robots: { index: false, follow: true },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -72,6 +73,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <div className="px-4 py-2 text-center text-xs" style={{ background: "#e8c735", color: "#050505" }}>
+          Canonical TRL/ACTIVE product content has moved to{" "}
+          <a href="https://www.trlactive.com" className="font-semibold underline underline-offset-2">trlactive.com</a>.
+        </div>
         <Nav />
         {children}
       </body>

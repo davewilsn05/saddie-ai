@@ -11,7 +11,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "Anthropic-AI", allow: "/" },
       { userAgent: "ChatGPT-User", allow: "/" },
     ],
-    sitemap: "https://saddie.ai/sitemap.xml",
     host: "https://saddie.ai",
   };
 }
