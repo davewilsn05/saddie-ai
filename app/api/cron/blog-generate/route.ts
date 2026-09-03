@@ -90,8 +90,8 @@ Return ONLY the markdown body. Start with the first paragraph, not a heading.`;
 
   // Build MDX file content
   const mdxContent = `---
-title: "${title.replace(/"/g, '\\"')}"
-description: "${description.replace(/"/g, '\\"')}"
+title: ${JSON.stringify(title)}
+description: ${JSON.stringify(description)}
 date: "${date}"
 tag: "${topic.tag}"
 cluster: "${topic.cluster}"

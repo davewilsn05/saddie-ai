@@ -13,7 +13,11 @@ type SurveyPayload = {
 };
 
 function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (email.length > 254 || /\s/.test(email)) return false;
+  const at = email.indexOf("@");
+  if (at <= 0 || at !== email.lastIndexOf("@")) return false;
+  const domain = email.slice(at + 1);
+  return domain.length <= 253 && domain.includes(".") && !domain.startsWith(".") && !domain.endsWith(".");
 }
 
 function normalizePayload(body: SurveyPayload) {

@@ -85,9 +85,13 @@ function renderMarkdown(content: string) {
       const items = trimmed.split("\n").filter((l) => l.match(/^[-*] /));
       return <ul key={i}>{items.map((item, j) => <li key={j}>{item.slice(2)}</li>)}</ul>;
     }
-    // Regular paragraph with inline bold
-    const html = trimmed.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    return <p key={i} dangerouslySetInnerHTML={{ __html: html }} />;
+    // Render the supported inline markdown without injecting raw HTML.
+    const inline = trimmed.split(/(\*\*[^*]+\*\*)/g).map((part, index) =>
+      part.startsWith("**") && part.endsWith("**")
+        ? <strong key={index}>{part.slice(2, -2)}</strong>
+        : part,
+    );
+    return <p key={i}>{inline}</p>;
   });
 }
 
@@ -113,7 +117,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c") }} />
       <style>{`
         .post-body p { margin-bottom: 1.2rem; color: var(--muted); line-height: 1.8; font-size: 1.05rem; }
         .post-body strong { color: var(--foreground); font-weight: 600; }
@@ -177,7 +181,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             <h3 className="text-lg font-bold mb-5" style={{ color: "var(--foreground)" }}>Related posts</h3>
             <div className="flex flex-col gap-3">
               {relatedPosts.map((p) => (
-                <Link key={p.slug} href={`/blog/${p.slug}`}
+                <Link key={p.slug} href={`/blog/${encodeURIComponent(p.slug)}`}
                   className="rounded-xl p-4 hover:scale-[1.005] transition-transform"
                   style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                   <div className="font-medium text-sm mb-1" style={{ color: "var(--foreground)" }}>{p.title}</div>
