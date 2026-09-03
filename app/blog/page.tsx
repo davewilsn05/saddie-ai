@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getAllPosts } from "../../lib/blog";
+import { blogHref, getAllPosts } from "../../lib/blog";
 import { TOPICS } from "../../lib/topics";
 import { buildSiteMetadata } from "../../lib/siteMetadata";
 
@@ -79,7 +79,7 @@ export default function BlogIndex() {
         {posts.map((post) => {
           const color = tagColors[post.tag] ?? "var(--accent)";
           return (
-            <Link key={post.slug} href={`/blog/${encodeURIComponent(post.slug)}`}
+            <Link key={post.slug} href={blogHref(post.slug)}
               className="group rounded-xl p-5 flex flex-col gap-3 hover:scale-[1.01] transition-transform"
               style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
               <div className="flex items-center justify-between">

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getAllPosts } from "../lib/blog";
+import { blogHref, getAllPosts } from "../lib/blog";
 import { COMPETITORS } from "../lib/competitors";
 import { SEO_LANDING_PAGES } from "../lib/seoLandingPages";
 
@@ -226,7 +226,7 @@ export default function Home() {
             {featuredPosts.map((post) => (
               <Link
                 key={post.slug}
-                href={`/blog/${encodeURIComponent(post.slug)}`}
+                href={blogHref(post.slug)}
                 className="rounded-xl p-5 flex flex-col gap-3 hover:scale-[1.01] transition-transform"
                 style={{ background: "var(--card)", border: "1px solid var(--border)" }}
               >

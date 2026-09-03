@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getAllPosts, getPost } from "../../../lib/blog";
+import { blogHref, getAllPosts, getPost } from "../../../lib/blog";
 import { TOPICS } from "../../../lib/topics";
 import { buildSiteMetadata } from "../../../lib/siteMetadata";
 
@@ -181,7 +181,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
             <h3 className="text-lg font-bold mb-5" style={{ color: "var(--foreground)" }}>Related posts</h3>
             <div className="flex flex-col gap-3">
               {relatedPosts.map((p) => (
-                <Link key={p.slug} href={`/blog/${encodeURIComponent(p.slug)}`}
+                <Link key={p.slug} href={blogHref(p.slug)}
                   className="rounded-xl p-4 hover:scale-[1.005] transition-transform"
                   style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
                   <div className="font-medium text-sm mb-1" style={{ color: "var(--foreground)" }}>{p.title}</div>
