@@ -42,3 +42,22 @@ Replace the override with an official compatible patched release when available,
 keeping the behavioral tests. Do not remove the override merely because the
 renamed package does not appear in npm's advisory database.
 
+
+## Legacy YAML command-line dependency
+
+The nested js-yaml 3 CLI used by gray-matter pulls in argparse 1 and the
+unpatched sprintf-js version covered by
+[GHSA-hp3w-g68c-fv3c](https://github.com/advisories/GHSA-hp3w-g68c-fv3c).
+A scoped js-yaml/argparse 2.0.1 override removes sprintf-js while keeping the
+legacy argument API through argparse's compatibility aliases. The YAML
+parser stays on its existing release so gray-matter's safeLoad/safeDump calls
+remain supported. Tests cover blog frontmatter parsing/serialization and the
+CLI's help, version and file parsing.
+
+Argparse 2.0.1 has a compatibility bug in its legacy constructor `version`
+option: the action receives an unset instance property. The postinstall
+script applies one checked, idempotent substitution to pass the constructor's
+version into the action. This preserves js-yaml's `--version` output without
+changing parsing or error handling. The script fails for an unexpected source
+or package version so a future upstream update requires review. Remove this
+compatibility shim when the upstream legacy-version fix is available.

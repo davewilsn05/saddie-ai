@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:dependency-guards": "node --test scripts/tests/dependency-depth-guard.test.mjs"
+    "test:dependency-guards": "node --test scripts/tests/dependency-depth-guard.test.mjs scripts/tests/frontmatter-dependencies.test.mjs",
+    "postinstall": "node scripts/patch-argparse-compat.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -28,6 +29,9 @@
     "typescript": "^5"
   },
   "overrides": {
-    "braces": "npm:@dieub/braces-depth-guard@3.0.3-pn.3"
+    "braces": "npm:@dieub/braces-depth-guard@3.0.3-pn.3",
+    "js-yaml": {
+      "argparse": "2.0.1"
+    }
   }
 }
